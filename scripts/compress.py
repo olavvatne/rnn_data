@@ -1,33 +1,4 @@
-
-matches = {
-'measure': 'mea', 
-'note': 'n', 
-'pitch':'p', 
-'step':'s', 
-'alter':'a', 
-'octave':'o', 
-'duration':'d', 
-'voice':'v',
-'stem': 'w',
-'beam':'b',
-'tie':'t',
-'notations': 'u',
-'tied':'x',
-'accidental':'y',
-'articulations': 'z',
-'time-modification':'mod',
-'actual-notes':'an',
-'normal-notes':'nn',
-'normal-type':'nt',
-'staccato': 'q',
-'metronome':'mt',
-'direction-type': 'dt',
-'attributes':'att',
-'direction' :'dir',
-'divisions': 'dis',
-'dynamics':'dyn',
-'top-syw-distance':'tsd'
-}
+from scripts.vocabular import matches
 
 def removeShit(s):
 	start = s.find('"')
@@ -38,15 +9,19 @@ def removeShit(s):
 	return s
 
 
-with open('../input-raw.txt', 'r') as finn:
-	with open('../input.txt', 'w') as fout:
+with open('../input-test', 'r') as finn:
+	with open('../output-test.txt', 'w') as fout:
 
 		line = finn.readline()
 
 		while line != "":
-
+			print(matches.items())
+			dont_write = False
 			for key, value in matches.items():
 
+				if "print" in line:
+					line = ""
+					dont_write = True
 				if "measure" in line:
 					if "number" in line:
 						line = removeShit(line)
@@ -69,8 +44,13 @@ with open('../input-raw.txt', 'r') as finn:
 				if "default-y" in line:
 					line = removeShit(line)
 					line = line.replace(" default-y", '')
-			
-			fout.write(line)
+
+			if len(line)>2 and line[-2] == ">":
+				line = line[0:-2] + "\n"
+			if len(line)>2  and line[-2] == "/":
+				line = line[0:-1]  + "\n"
+			if not dont_write:
+				fout.write(line)
 
 			line = finn.readline()
 
